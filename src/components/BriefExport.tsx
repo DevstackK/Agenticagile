@@ -1,6 +1,7 @@
 import { STAGES } from '../data/questions'
 import { downloadFile, toJSON, toMarkdown } from '../lib/export'
 import type { Session } from '../lib/schema'
+import { RequirementsDraftPanel } from './RequirementsDraftPanel'
 
 type Props = {
   session: Session
@@ -33,6 +34,8 @@ export function BriefExport({ session, onBack, onExit }: Props) {
           Export Session for Sharing
         </button>
       </div>
+
+      <RequirementsDraftPanel answers={session.answers} fileBase={base} />
 
       <div className="brief-body">
         {STAGES.map((stage) => (
