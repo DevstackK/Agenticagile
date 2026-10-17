@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { buildAnthropicMessages } from '../src/server/buildAnthropicMessages'
-import { validateSuggestRequest } from '../src/server/validateSuggestRequest'
+import { buildAnthropicMessages } from './_lib/buildAnthropicMessages'
+import { validateSuggestRequest } from './_lib/validateSuggestRequest'
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
 const TIMEOUT_MS = 10000

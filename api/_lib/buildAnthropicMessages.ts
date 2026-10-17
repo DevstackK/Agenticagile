@@ -1,4 +1,4 @@
-import type { SuggestRequestBody } from '../lib/suggest'
+import type { SuggestRequestBody } from '../../src/lib/suggest'
 
 export type AnthropicMessagesPayload = {
   model: string

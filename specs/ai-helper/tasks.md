@@ -2,9 +2,9 @@
 
 - [x] Install `@vercel/node` as a dev dependency for serverless function types.
 - [x] Define shared `SuggestRequestBody`/`SuggestResult` types in `src/lib/suggest.ts` (design.md: Data/Interfaces).
-- [x] Implement `src/server/validateSuggestRequest.ts` — pure validation function (AC11).
+- [x] Implement `api/_lib/validateSuggestRequest.ts` — pure validation function (AC11).
 - [x] Write unit tests for `validateSuggestRequest.ts`: valid body passes, missing `question` rejected, missing `contextAnswers` defaults to `{}`.
-- [x] Implement `src/server/buildAnthropicMessages.ts` — pure prompt-building function (AC10).
+- [x] Implement `api/_lib/buildAnthropicMessages.ts` — pure prompt-building function (AC10).
 - [x] Write unit tests for `buildAnthropicMessages.ts`: output includes the question, the grounding methodology, and only the provided context answers.
 - [x] Implement `api/suggest.ts` — Vercel serverless handler wiring validation → prompt build → Anthropic fetch (with AbortController timeout) → response mapping (AC9, AC11, AC12, AC15).
 - [x] Implement `src/lib/suggest.ts` frontend fetch wrapper `requestSuggestion()` and `buildContextAnswers()` (AC2, AC13).

@@ -6,8 +6,8 @@ Add a Vercel serverless function (`api/suggest.ts`) that proxies to the Anthropi
 ## Components / Files
 
 - `api/suggest.ts` — new. Vercel Node serverless function (`@vercel/node` types). Parses the request, calls `validateSuggestRequest`, calls `buildAnthropicMessages`, does the `fetch` to `https://api.anthropic.com/v1/messages` with `ANTHROPIC_API_KEY` from `process.env`, maps the result to `{ suggestion }` or `{ error }`. Covers AC9, AC11, AC12, AC15.
-- `src/server/validateSuggestRequest.ts` — new, pure function: `(body: unknown) => { ok: true; data: SuggestRequestBody } | { ok: false; error: string }`. Checks `question` is a non-empty string (AC11); `contextAnswers` defaults to `{}` if absent.
-- `src/server/buildAnthropicMessages.ts` — new, pure function: `(data: SuggestRequestBody) => AnthropicMessagesPayload`. Builds the system/user prompt instructing a concise first-person draft grounded in the given methodology, using only the supplied context answers (AC10).
+- `api/_lib/validateSuggestRequest.ts` — new, pure function: `(body: unknown) => { ok: true; data: SuggestRequestBody } | { ok: false; error: string }`. Checks `question` is a non-empty string (AC11); `contextAnswers` defaults to `{}` if absent.
+- `api/_lib/buildAnthropicMessages.ts` — new, pure function: `(data: SuggestRequestBody) => AnthropicMessagesPayload`. Builds the system/user prompt instructing a concise first-person draft grounded in the given methodology, using only the supplied context answers (AC10).
 - `src/lib/suggest.ts` — new, frontend: `requestSuggestion(payload: SuggestRequestBody): Promise<SuggestResult>` — `fetch('/api/suggest', ...)`, maps non-200/network errors to `{ ok: false, error }` (AC12). Also exports `buildContextAnswers(allAnswers: Answers): Record<string, string>` — flattens all four stages' answers, filtering out empty/unset ones (AC13).
 - `src/components/SuggestionPanel.tsx` — new. Renders one question's suggestion lifecycle: idle (nothing shown), loading (spinner text, button disabled), ready (suggestion text + "Use this" / "Discard"), error (message + "Retry"). Covers AC3, AC4, AC5, AC7, AC12.
 - `src/components/StageForm.tsx` — modified. Add `allAnswers: Answers` prop (full session, for context). For `type === 'text'` questions only, render a "Suggest" button and a `SuggestionPanel`, with local state `Record<questionId, SuggestionState>`. "Use this" calls the existing `onChange(questionId, suggestionText)` — no new answer-writing path. Covers AC1, AC2, AC6, AC8, AC14 (one in-flight request per question via the state machine's `loading` status blocking re-trigger).
@@ -16,7 +16,7 @@ Add a Vercel serverless function (`api/suggest.ts`) that proxies to the Anthropi
 ## Data / Interfaces
 
 ```ts
-// shared shape, used by both src/lib/suggest.ts and src/server/validateSuggestRequest.ts
+// shared shape, used by both src/lib/suggest.ts and api/_lib/validateSuggestRequest.ts
 type SuggestRequestBody = {
   question: string
   grounding: string
