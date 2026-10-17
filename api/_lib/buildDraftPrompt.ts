@@ -9,7 +9,7 @@ const STAGE_LABELS: Record<keyof DraftAnswers, string> = {
 }
 
 const MODEL = 'claude-sonnet-5'
-const MAX_TOKENS = 4000
+const MAX_TOKENS = 8000
 
 const JSON_SHAPE_EXAMPLE = `{
   "initiative": { "title": "string", "description": "string" },

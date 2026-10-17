@@ -44,8 +44,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return
     }
 
-    const data = (await response.json()) as { content?: Array<{ text?: string }> }
-    const suggestion = data.content?.[0]?.text
+    const data = (await response.json()) as { content?: Array<{ type?: string; text?: string }> }
+    const suggestion = data.content?.find((block) => block.type === 'text')?.text
 
     if (typeof suggestion !== 'string') {
       res.status(502).json({ error: 'AI helper returned an unexpected response' })

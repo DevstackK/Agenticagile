@@ -5,7 +5,9 @@ import { RequirementsDraftSchema } from './_lib/requirementsDraftSchema'
 import { extractJson } from './_lib/extractJson'
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
-const TIMEOUT_MS = 20000
+const TIMEOUT_MS = 55000
+
+export const config = { maxDuration: 60 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -46,10 +48,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return
     }
 
-    const data = (await response.json()) as { content?: Array<{ text?: string }> }
-    const rawText = data.content?.[0]?.text
+    const data = (await response.json()) as { content?: Array<{ type?: string; text?: string }> }
+    const rawText = data.content?.find((block) => block.type === 'text')?.text
 
     if (typeof rawText !== 'string') {
+      console.error('draft-requirements: no text content in response', JSON.stringify(data).slice(0, 1000))
       res.status(502).json({ error: 'AI helper returned an unexpected response' })
       return
     }
