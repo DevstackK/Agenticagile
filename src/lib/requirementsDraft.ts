@@ -42,16 +42,18 @@ function csvRow(fields: string[]): string {
 }
 
 export function toJiraCsv(draft: RequirementsDraft): string {
-  const rows = ['Issue Type,Summary,Description,Epic Name,Epic Link']
+  const rows = ['Issue Type,Summary,Description,Epic Name,Epic Link,Strategy,Strategy Rationale']
 
   for (const epic of draft.epics) {
-    rows.push(csvRow(['Epic', epic.title, epic.description, epic.title, '']))
+    rows.push(csvRow(['Epic', epic.title, epic.description, epic.title, '', '', '']))
 
     for (const story of epic.stories) {
       const userStory = `As a ${story.userStory.role}, I want ${story.userStory.capability}, so that ${story.userStory.benefit}.`
       const criteria = story.acceptanceCriteria.map((c, i) => `${i + 1}. ${c}`).join('\n')
       const description = `${userStory}\n\nAcceptance Criteria:\n${criteria}`
-      rows.push(csvRow(['Story', story.title, description, '', epic.title]))
+      rows.push(
+        csvRow(['Story', story.title, description, '', epic.title, story.strategy, story.strategyRationale]),
+      )
     }
   }
 
@@ -78,6 +80,7 @@ export function toDraftMarkdown(draft: RequirementsDraft): string {
       story.acceptanceCriteria.forEach((criterion, i) => {
         lines.push(`${i + 1}. ${criterion}`)
       })
+      lines.push('', `**Recommended Strategy:** ${story.strategy} — ${story.strategyRationale}`)
     }
   }
 

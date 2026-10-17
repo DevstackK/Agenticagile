@@ -100,6 +100,9 @@ export function RequirementsDraftPanel({ answers, fileBase }: Props) {
                     <li key={criterion}>{criterion}</li>
                   ))}
                 </ol>
+                <p>
+                  <strong>Recommended strategy:</strong> {story.strategy} — {story.strategyRationale}
+                </p>
               </div>
             ))}
           </section>

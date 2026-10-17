@@ -13,6 +13,8 @@ function validDraft() {
             title: 'Sign up',
             userStory: { role: 'new user', capability: 'create an account', benefit: 'I can start using the app' },
             acceptanceCriteria: ['WHEN a user submits valid details THEN the system SHALL create an account.'],
+            strategy: 'spec-driven-dev',
+            strategyRationale: 'Account creation touches security and auth, so a written spec reduces risk.',
           },
         ],
       },
@@ -47,5 +49,25 @@ describe('RequirementsDraftSchema', () => {
     const draft = validDraft()
     draft.epics = []
     expect(RequirementsDraftSchema.safeParse(draft).success).toBe(false)
+  })
+
+  it('rejects a story with an invalid strategy value', () => {
+    const draft = validDraft()
+    draft.epics[0].stories[0].strategy = 'waterfall'
+    expect(RequirementsDraftSchema.safeParse(draft).success).toBe(false)
+  })
+
+  it('rejects a story with a missing strategyRationale', () => {
+    const draft = validDraft()
+    draft.epics[0].stories[0].strategyRationale = ''
+    expect(RequirementsDraftSchema.safeParse(draft).success).toBe(false)
+  })
+
+  it('accepts each of the four allowed strategy values', () => {
+    for (const strategy of ['spec-driven-dev', 'tdd', 'plan-mode', 'vibe-coding'] as const) {
+      const draft = validDraft()
+      draft.epics[0].stories[0].strategy = strategy
+      expect(RequirementsDraftSchema.safeParse(draft).success).toBe(true)
+    }
   })
 })

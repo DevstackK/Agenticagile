@@ -16,6 +16,8 @@ function sampleDraft(): RequirementsDraft {
               'WHEN a user submits valid details THEN the system SHALL create an account.',
               'IF the email is already registered THEN the system SHALL show an error.',
             ],
+            strategy: 'tdd',
+            strategyRationale: 'Account creation logic is well-defined and easy to test in isolation.',
           },
         ],
       },
@@ -46,10 +48,11 @@ describe('toJiraCsv', () => {
     const csv = toJiraCsv(sampleDraft())
     const lines = csv.split('\n').filter((l) => !l.startsWith('WHEN') && !l.startsWith('IF') && !l.startsWith('1.') && !l.startsWith('2.') && !l.startsWith('Acceptance') && !l.startsWith('As a'))
 
-    expect(lines[0]).toBe('Issue Type,Summary,Description,Epic Name,Epic Link')
-    expect(csv).toContain('Epic,Onboarding,Get new users set up,Onboarding,')
+    expect(lines[0]).toBe('Issue Type,Summary,Description,Epic Name,Epic Link,Strategy,Strategy Rationale')
+    expect(csv).toContain('Epic,Onboarding,Get new users set up,Onboarding,,,')
     expect(csv).toContain('Story,Sign up,')
     expect(csv).toContain(',Onboarding') // Epic Link column on the story row
+    expect(csv).toContain('tdd,Account creation logic is well-defined and easy to test in isolation.')
   })
 })
 
@@ -62,5 +65,8 @@ describe('toDraftMarkdown', () => {
     expect(markdown).toContain('**As a** new user, **I want** create an account, **so that** I can start using the app.')
     expect(markdown).toContain('1. WHEN a user submits valid details THEN the system SHALL create an account.')
     expect(markdown).toContain('2. IF the email is already registered THEN the system SHALL show an error.')
+    expect(markdown).toContain(
+      '**Recommended Strategy:** tdd — Account creation logic is well-defined and easy to test in isolation.',
+    )
   })
 })

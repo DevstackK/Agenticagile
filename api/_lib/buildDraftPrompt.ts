@@ -21,7 +21,9 @@ const JSON_SHAPE_EXAMPLE = `{
         {
           "title": "string",
           "userStory": { "role": "string", "capability": "string", "benefit": "string" },
-          "acceptanceCriteria": ["WHEN ... THEN the system SHALL ..."]
+          "acceptanceCriteria": ["WHEN ... THEN the system SHALL ..."],
+          "strategy": "spec-driven-dev|tdd|plan-mode|vibe-coding",
+          "strategyRationale": "string"
         }
       ]
     }
@@ -34,6 +36,10 @@ export function buildDraftPrompt(answers: DraftAnswers): AnthropicMessagesPayloa
     'broken into Stories. Each Story must include a user story (role/capability/benefit) and one or more ' +
     'EARS-style acceptance criteria ("WHEN/IF ... THEN the system SHALL ..."). ' +
     'Every Epic must have at least one Story, and every Story must have at least one acceptance criterion. ' +
+    'For each Story, also recommend a development strategy — exactly one of "spec-driven-dev", "tdd", ' +
+    '"plan-mode", or "vibe-coding" — plus a one-sentence strategyRationale. Use this heuristic: if the story ' +
+    'is well-understood and cheap to redo if wrong, recommend "plan-mode" or "vibe-coding"; if it is ambiguous, ' +
+    'expensive to get wrong, or has shared/cross-team impact, recommend "spec-driven-dev" or "tdd". ' +
     'Respond with ONLY a single JSON object matching this shape, no markdown fences, no commentary:\n\n' +
     JSON_SHAPE_EXAMPLE
 

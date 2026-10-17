@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+export const STRATEGIES = ['spec-driven-dev', 'tdd', 'plan-mode', 'vibe-coding'] as const
+
 export const StorySchema = z.object({
   title: z.string().min(1),
   userStory: z.object({
@@ -8,6 +10,8 @@ export const StorySchema = z.object({
     benefit: z.string().min(1),
   }),
   acceptanceCriteria: z.array(z.string().min(1)).min(1),
+  strategy: z.enum(STRATEGIES),
+  strategyRationale: z.string().min(1),
 })
 
 export const EpicSchema = z.object({
