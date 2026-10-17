@@ -82,7 +82,13 @@ export function Wizard({ initialSession, onExit }: Props) {
         </button>
       </div>
 
-      <StageForm stage={stage} answers={stageAnswers} onChange={updateAnswer} showValidation={showValidation} />
+      <StageForm
+        stage={stage}
+        answers={stageAnswers}
+        allAnswers={session.answers}
+        onChange={updateAnswer}
+        showValidation={showValidation}
+      />
 
       <div className="wizard-nav">
         <button type="button" onClick={goBack} disabled={session.activeStageIndex === 0}>

@@ -1,17 +1,47 @@
+import { useState } from 'react'
 import { getMissingRequiredQuestionIds, type StageDefinition } from '../data/questions'
 import type { Answers, StageKey } from '../lib/schema'
+import { buildContextAnswers, requestSuggestion } from '../lib/suggest'
+import { SuggestionPanel, type SuggestionState } from './SuggestionPanel'
 
 type StageAnswers = Answers[StageKey]
 
 type Props = {
   stage: StageDefinition
   answers: StageAnswers
+  allAnswers: Answers
   onChange: (questionId: string, value: string) => void
   showValidation: boolean
 }
 
-export function StageForm({ stage, answers, onChange, showValidation }: Props) {
+export function StageForm({ stage, answers, allAnswers, onChange, showValidation }: Props) {
   const missing = new Set(getMissingRequiredQuestionIds(stage, answers))
+  const [suggestions, setSuggestions] = useState<Record<string, SuggestionState>>({})
+
+  async function handleRequestSuggestion(questionId: string, label: string, grounding: string) {
+    setSuggestions((prev) => ({ ...prev, [questionId]: { status: 'loading' } }))
+    const result = await requestSuggestion({
+      question: label,
+      grounding,
+      contextAnswers: buildContextAnswers(allAnswers),
+    })
+    setSuggestions((prev) => ({
+      ...prev,
+      [questionId]: result.ok ? { status: 'ready', text: result.suggestion } : { status: 'error', message: result.error },
+    }))
+  }
+
+  function handleUse(questionId: string) {
+    const suggestion = suggestions[questionId]
+    if (suggestion?.status === 'ready') {
+      onChange(questionId, suggestion.text)
+    }
+    setSuggestions((prev) => ({ ...prev, [questionId]: { status: 'idle' } }))
+  }
+
+  function handleDiscard(questionId: string) {
+    setSuggestions((prev) => ({ ...prev, [questionId]: { status: 'idle' } }))
+  }
 
   return (
     <div className="stage-form">
@@ -19,6 +49,7 @@ export function StageForm({ stage, answers, onChange, showValidation }: Props) {
       {stage.questions.map((question) => {
         const value = answers[question.id] ?? ''
         const isMissing = showValidation && missing.has(question.id)
+        const suggestionState = suggestions[question.id] ?? { status: 'idle' as const }
 
         return (
           <div className={isMissing ? 'question missing' : 'question'} key={question.id}>
@@ -53,6 +84,15 @@ export function StageForm({ stage, answers, onChange, showValidation }: Props) {
             )}
 
             {isMissing && <div className="missing-message">This question is required.</div>}
+
+            {question.type === 'text' && (
+              <SuggestionPanel
+                state={suggestionState}
+                onRequest={() => handleRequestSuggestion(question.id, question.label, question.grounding)}
+                onUse={() => handleUse(question.id)}
+                onDiscard={() => handleDiscard(question.id)}
+              />
+            )}
           </div>
         )
       })}
