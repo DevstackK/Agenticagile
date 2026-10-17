@@ -1,0 +1,192 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #1a1a1a;
+  background: #fafafa;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.progress-indicator {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-step {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem;
+  border-bottom: 3px solid #ddd;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.progress-step.active {
+  border-bottom-color: #4a6cf7;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.progress-step-number {
+  display: block;
+  font-weight: bold;
+}
+
+.wizard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.exit-link {
+  white-space: nowrap;
+}
+
+.question {
+  margin-bottom: 1.25rem;
+}
+
+.question label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.grounding-label {
+  font-size: 0.75rem;
+  color: #777;
+  margin-bottom: 0.35rem;
+}
+
+.question textarea,
+.question select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.question.missing textarea,
+.question.missing select {
+  border-color: #d93025;
+}
+
+.missing-message {
+  color: #d93025;
+  font-size: 0.85rem;
+}
+
+.required-mark {
+  color: #d93025;
+}
+
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.storage-warning-banner {
+  background: #fff3cd;
+  border: 1px solid #ffe69c;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.resume-banner {
+  background: #e7f0ff;
+  border: 1px solid #c3d9ff;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.new-session,
+.import-session {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.session-entries {
+  list-style: none;
+  padding: 0;
+}
+
+.session-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.session-open {
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #1a1a1a;
+}
+
+.session-updated {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.error-message {
+  color: #d93025;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.brief-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.brief-answer {
+  margin-bottom: 0.75rem;
+}
+
+.brief-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.5rem 0.9rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+  font-size: 0.9rem;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

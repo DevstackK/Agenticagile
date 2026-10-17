@@ -1,0 +1,21 @@
+# Tasks: Discovery Wizard (Agentic Agile)
+
+- [x] Scaffold Vite + React + TypeScript project (`package.json`, `vite.config.ts`, `tsconfig.json`, `src/main.tsx`), install `zod`.
+- [x] Define `src/lib/schema.ts` — zod `SessionSchema` and inferred `Session` type (design.md: Data/Interfaces).
+- [x] Define `src/types/session.ts` re-exporting `Session`/`Answer` types from `schema.ts`.
+- [x] Define `src/data/questions.ts` — all four stage definitions with their questions, options, required flags, and grounding strings (AC6–AC12).
+- [x] Write unit tests for `schema.ts` covering valid session, missing required key, and wrong-type field (AC19/AC20 groundwork).
+- [x] Implement `src/lib/storage.ts` — `listSessions`, `loadSession`, `saveSession` (debounced), `deleteSession`, all wrapped in try/catch with an in-memory fallback flag (AC13, AC21, AC22).
+- [x] Write unit tests for `storage.ts`: normal save/load round-trip, corrupted-data load returns `{ ok: false }`, simulated storage-full triggers fallback flag.
+- [x] Implement `src/lib/export.ts` — `toJSON`, `toMarkdown`, `downloadFile` (AC17, AC18).
+- [x] Write unit tests for `export.ts`: JSON output matches session, Markdown output includes all four stages' answers.
+- [x] Implement `src/lib/importSession.ts` — file read + `safeParse` validation, returns `{ ok, session } | { ok, error }` (AC19, AC20).
+- [x] Write unit tests for `importSession.ts`: valid file imports cleanly, invalid JSON rejected with error, schema-mismatched JSON rejected with error.
+- [x] Build `src/components/ProgressIndicator.tsx` (AC2).
+- [x] Build `src/components/StageForm.tsx` — renders questions per stage, text/select inputs, grounding label, missing-required-field indicators (AC5, AC10, AC11, AC12).
+- [x] Build `src/components/Wizard.tsx` — stage state, next/back navigation, wires autosave via `storage.ts` (AC1, AC3, AC4, AC13).
+- [x] Build `src/components/SessionList.tsx` — list sessions, resume, new-session naming prompt, delete, import-file button, per-row corrupted-session error handling (AC14, AC15, AC16, AC22).
+- [x] Build `src/components/BriefExport.tsx` — combined brief view + export JSON/Markdown + export-for-sharing buttons, shown on stage 4 completion (AC16, AC17, AC18).
+- [x] Build `src/components/StorageWarningBanner.tsx` — shown when storage fallback flag is set (AC21).
+- [x] Wire `src/App.tsx` — toggles between `SessionList` and `Wizard`, mounts `StorageWarningBanner` globally, handles "resume most recent session" on load (AC14).
+- [x] Manual verification pass: run the app, complete a full 4-stage session end to end, export JSON + Markdown, reload the browser and confirm resume works, export-and-reimport a session on a fresh browser profile (or incognito) to confirm the sharing round-trip.
