@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { buildDraftPrompt } from './_lib/buildDraftPrompt'
 import { validateDraftRequest } from './_lib/validateDraftRequest'
 import { RequirementsDraftSchema } from './_lib/requirementsDraftSchema'
+import { extractJson } from './_lib/extractJson'
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
 const TIMEOUT_MS = 20000
@@ -55,14 +56,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     let parsed: unknown
     try {
-      parsed = JSON.parse(rawText)
-    } catch {
+      parsed = JSON.parse(extractJson(rawText))
+    } catch (err) {
+      console.error('draft-requirements: JSON.parse failed', err, rawText.slice(0, 500))
       res.status(502).json({ error: 'AI helper returned an unexpected response' })
       return
     }
 
     const result = RequirementsDraftSchema.safeParse(parsed)
     if (!result.success) {
+      console.error('draft-requirements: schema validation failed', result.error.issues)
       res.status(502).json({ error: 'AI helper returned an unexpected response' })
       return
     }
