@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { getMissingRequiredQuestionIds, STAGES } from '../data/questions'
 import { createDebouncedSave } from '../lib/storage'
-import type { Session } from '../lib/schema'
+import type { Session, StageGate as StageGateData } from '../lib/schema'
 import { BriefExport } from './BriefExport'
 import { StageForm } from './StageForm'
+import { StageGate } from './StageGate'
 import { ProgressIndicator } from './ProgressIndicator'
 
 type Props = {
@@ -15,6 +16,7 @@ export function Wizard({ initialSession, onExit }: Props) {
   const [session, setSession] = useState<Session>(initialSession)
   const [showValidation, setShowValidation] = useState(false)
   const [completed, setCompleted] = useState(false)
+  const [showGate, setShowGate] = useState(false)
   const debouncedRef = useRef(createDebouncedSave())
 
   useEffect(() => {
@@ -46,12 +48,24 @@ export function Wizard({ initialSession, onExit }: Props) {
     }))
   }
 
+  function updateStageGate(patch: Partial<StageGateData>) {
+    setSession((prev) => ({
+      ...prev,
+      updatedAt: new Date().toISOString(),
+      stageGate: { ...prev.stageGate, ...patch },
+    }))
+  }
+
   function goNext() {
     if (missing.length > 0) {
       setShowValidation(true)
       return
     }
     setShowValidation(false)
+    if (session.activeStageIndex === 0) {
+      setShowGate(true)
+      return
+    }
     if (isLastStage) {
       setCompleted(true)
       return
@@ -61,6 +75,11 @@ export function Wizard({ initialSession, onExit }: Props) {
 
   function goBack() {
     setShowValidation(false)
+    if (session.activeStageIndex === 1) {
+      setSession((prev) => ({ ...prev, activeStageIndex: 0 }))
+      setShowGate(true)
+      return
+    }
     setSession((prev) => ({ ...prev, activeStageIndex: Math.max(0, prev.activeStageIndex - 1) }))
   }
 
@@ -71,6 +90,34 @@ export function Wizard({ initialSession, onExit }: Props) {
 
   if (completed) {
     return <BriefExport session={session} onBack={() => setCompleted(false)} onExit={exitToList} />
+  }
+
+  if (showGate) {
+    return (
+      <div className="wizard">
+        <div className="wizard-header">
+          <ProgressIndicator activeStageIndex={session.activeStageIndex} />
+          <button type="button" onClick={exitToList} className="exit-link">
+            Save &amp; back to sessions
+          </button>
+        </div>
+
+        <StageGate
+          stageGate={session.stageGate}
+          businessCaseAnswers={
+            Object.fromEntries(
+              Object.entries(session.answers.businessCase).filter((entry): entry is [string, string] => entry[1] !== null),
+            )
+          }
+          onUpdate={updateStageGate}
+          onContinue={() => {
+            setShowGate(false)
+            setSession((prev) => ({ ...prev, activeStageIndex: 1 }))
+          }}
+          onBackToForm={() => setShowGate(false)}
+        />
+      </div>
+    )
   }
 
   return (
